@@ -1,10 +1,12 @@
 import {vec3} from 'gl-matrix';
 import * as Stats from 'stats-js';
 import * as DAT from 'dat-gui';
+import Mesh from './geometry/Mesh';
 import Square from './geometry/Square';
 import ScreenQuad from './geometry/ScreenQuad';
 import OpenGLRenderer from './rendering/gl/OpenGLRenderer';
 import Camera from './Camera';
+import LSystem from './LSystem';
 import {setGL} from './globals';
 import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
 
@@ -14,8 +16,124 @@ const controls = {
 };
 
 let square: Square;
+let cylinder: Mesh;
 let screenQuad: ScreenQuad;
+let lsystem: LSystem;
 let time: number = 0.0;
+
+function readTextFile(file: string) {
+  var rawFile = new XMLHttpRequest();
+  let out: string;
+  rawFile.open("GET", file, false);
+  rawFile.onreadystatechange = function() {
+    if (rawFile.status === 200 || rawFile.status == 0) {
+      out = rawFile.responseText;
+    }
+  }
+  rawFile.send(null);
+  return out;
+}
+
+function loadLSystem() {
+  let cylinderObj = readTextFile("./cylinder.obj");
+  cylinder = new Mesh(cylinderObj, vec3.fromValues(0, 0, 0));
+  cylinder.create();
+
+  lsystem = new LSystem('F', 3);
+  lsystem.iterate();
+
+  // The columns of the transformation matrices
+  let col1 = [];
+  let col2 = [];
+  let col3 = [];
+  let col4 = [];
+
+  let colors = [];
+
+  let branchTransformations = lsystem.drawer.branchTransformations;
+  let leafTransformations = lsystem.drawer.leafTransformations;
+
+  // Push branch transformation matrices
+  for (let i = 0; i < branchTransformations.length; i++) {
+    let transformation = branchTransformations[i];
+
+    col1.push(transformation[0]);
+    col1.push(transformation[1]);
+    col1.push(transformation[2]);
+    col1.push(transformation[3]);
+
+    col2.push(transformation[4]);
+    col2.push(transformation[5]);
+    col2.push(transformation[6]);
+    col2.push(transformation[7]);
+
+    col3.push(transformation[8]);
+    col3.push(transformation[9]);
+    col3.push(transformation[10]);
+    col3.push(transformation[11]);
+
+    col4.push(transformation[12]);
+    col4.push(transformation[13]);
+    col4.push(transformation[14]);
+    col4.push(transformation[15]);
+
+    colors.push(1.0);
+    colors.push(1.0);
+    colors.push(1.0);
+    colors.push(1.0);
+  }
+
+  let colorsVBO = new Float32Array(colors);
+  let col1VBO = new Float32Array(col1);
+  let col2VBO = new Float32Array(col2);
+  let col3VBO = new Float32Array(col3);
+  let col4VBO = new Float32Array(col4);
+  cylinder.setInstanceVBOs(col1VBO, col2VBO, col3VBO, col4VBO, colorsVBO);
+  cylinder.setNumInstances(branchTransformations.length);
+
+  // Empty out
+  col1 = [];
+  col2 = [];
+  col3 = [];
+  col4 = [];
+  colors = [];
+
+  for (let i = 0; i < leafTransformations.length; i++) {
+    let transformation = leafTransformations[i];
+
+    col1.push(transformation[0]);
+    col1.push(transformation[1]);
+    col1.push(transformation[2]);
+    col1.push(transformation[3]);
+
+    col2.push(transformation[4]);
+    col2.push(transformation[5]);
+    col2.push(transformation[6]);
+    col2.push(transformation[7]);
+
+    col3.push(transformation[8]);
+    col3.push(transformation[9]);
+    col3.push(transformation[10]);
+    col3.push(transformation[11]);
+
+    col4.push(transformation[12]);
+    col4.push(transformation[13]);
+    col4.push(transformation[14]);
+    col4.push(transformation[15]);
+
+    colors.push(1.0);
+    colors.push(1.0);
+    colors.push(1.0);
+    colors.push(1.0);
+  }
+  colorsVBO = new Float32Array(colors);
+  col1VBO = new Float32Array(col1);
+  col2VBO = new Float32Array(col2);
+  col3VBO = new Float32Array(col3);
+  col4VBO = new Float32Array(col4);
+  cylinder.setInstanceVBOs(col1VBO, col2VBO, col3VBO, col4VBO, colorsVBO);
+  cylinder.setNumInstances(branchTransformations.length);
+}
 
 function loadScene() {
   square = new Square();

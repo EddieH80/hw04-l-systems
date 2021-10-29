@@ -27,6 +27,11 @@ class ShaderProgram {
   attrTranslate: number; // Used in the vertex shader during instanced rendering to offset the vertex positions to the particle's drawn position.
   attrUV: number;
 
+  attrTransform1: number;
+  attrTransform2: number;
+  attrTransform3: number;
+  attrTransform4: number;
+
   unifModel: WebGLUniformLocation;
   unifModelInvTr: WebGLUniformLocation;
   unifViewProj: WebGLUniformLocation;
@@ -158,6 +163,29 @@ class ShaderProgram {
     }
 
     // TODO: Set up attribute data for additional instanced rendering data as needed
+    if (this.attrTransform1 != -1 && d.bindTransform1()) {
+      gl.enableVertexAttribArray(this.attrTransform1);
+      gl.vertexAttribPointer(this.attrTransform1, 4, gl.FLOAT, false, 0, 0);
+      gl.vertexAttribDivisor(this.attrTransform1, 1);
+    }
+
+    if (this.attrTransform2 != -1 && d.bindTransform2()) {
+        gl.enableVertexAttribArray(this.attrTransform2);
+        gl.vertexAttribPointer(this.attrTransform2, 4, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribDivisor(this.attrTransform2, 1);
+    }
+
+    if (this.attrTransform3 != -1 && d.bindTransform3()) {
+        gl.enableVertexAttribArray(this.attrTransform3);
+        gl.vertexAttribPointer(this.attrTransform3, 4, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribDivisor(this.attrTransform3, 1);
+    }
+
+    if (this.attrTransform4 != -1 && d.bindTransform4()) {
+        gl.enableVertexAttribArray(this.attrTransform4);
+        gl.vertexAttribPointer(this.attrTransform4, 4, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribDivisor(this.attrTransform4, 1);
+    }
 
     d.bindIdx();
     // drawElementsInstanced uses the vertexAttribDivisor for each "in" variable to

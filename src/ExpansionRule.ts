@@ -8,13 +8,13 @@ export default class ExpansionRule {
 
     constructor() {
         this.grammarX.set("F", "FF");
-        this.grammarX.set("X", "F[1X]2FX");
+        this.grammarX.set("X", "F[1X]2FLX");
 
         this.grammarY.set("F", "FFF");
-        this.grammarY.set("X", "F[3X]4FX");
+        this.grammarY.set("X", "FL[3X]4FX");
 
         this.grammarZ.set("F", "FF");
-        this.grammarZ.set("X", "F[5X]6FX");
+        this.grammarZ.set("X", "FL[5X]6FX");
     }
 
     expand(axiom: string, iterations: number) {

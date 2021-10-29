@@ -6,7 +6,7 @@ export default class DrawingRule {
     turtleStack: Array<Turtle> = new Array();
     turtle: Turtle;
     branchTransformations: mat4[] = [];
-    leaveTransformations: mat4[] = [];
+    leafTransformations: mat4[] = [];
 
     constructor() {
         this.drawRules.set("F", this.turtle.moveForward.bind(this.turtle));
@@ -16,6 +16,8 @@ export default class DrawingRule {
         this.drawRules.set("4", this.turtle.rotateRightNeg.bind(this.turtle));
         this.drawRules.set("5", this.turtle.rotateUpPos.bind(this.turtle));
         this.drawRules.set("6", this.turtle.rotateUpNeg.bind(this.turtle));
+        this.drawRules.set("[", this.pushTurtle.bind(this, this.turtle));
+        this.drawRules.set("]", this.popTurtle.bind(this));
     }
 
     draw(seq : string) {
@@ -26,15 +28,27 @@ export default class DrawingRule {
                 func();
             }
             if (char == 'F') {
-
+                this.turtle.radius = Math.max(0.2, 0.85 * this.turtle.radius);
+                this.branchTransformations.push(this.turtle.getTransformationMat());
+            }
+            if (char == 'L') {
+                this.leafTransformations.push(this.turtle.getTransformationMat());
             }
             // Push transformation for F and reduce branch radius
-            if (char == '[') {
-                this.turtleStack.push(this.turtle);
-            }
-            if (char == ']') {
-                this.turtle = this.turtleStack.pop();
-            }
+            // if (char == '[') {
+            //     this.turtleStack.push(this.turtle);
+            // }
+            // if (char == ']') {
+            //     this.turtle = this.turtleStack.pop();
+            // }
         }
+    }
+
+    pushTurtle(turtle: Turtle) {
+        this.turtleStack.push(turtle);
+    }
+
+    popTurtle() {
+        return this.turtleStack.pop();
     }
 }
