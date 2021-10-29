@@ -1,25 +1,108 @@
-import {vec3, vec4, mat4} from 'gl-matrix';
+import {vec3, vec4, mat4, quat} from 'gl-matrix';
+
+function degToRad(deg: number) {
+    return deg * Math.PI / 180.0;
+}
 
 export default class Turtle {
     position : vec3;
-    orientation: vec3;
+    forward: vec4;
+    right: vec4;
+    up: vec4;
+    pathLength: number;
+    depth: number;
     radius: number;
+    deg: number;
 
-    constructor(pos: vec3, orient: vec3, radius: number) {
+    constructor(pos: vec3, forward: vec4, right: vec4, up: vec4, pathLength: number, depth: number, radius: number) {
         this.position = pos;
-        this.orientation = orient;
+        this.forward = forward;
+        this.right = right;
+        this.up = up;
+        this.pathLength = pathLength;
+        this.depth = depth;
         this.radius = radius;
+        this.deg = 20.0 + Math.random() * 30.0;
     }
 
     moveForward() {
-        vec3.add(this.position, this.position, this.orientation);
+        let dir = vec3.fromValues(this.forward[0], this.forward[1], this.forward[2]);
+        let dist = vec3.fromValues(dir[0] * this.pathLength, dir[1] * this.pathLength, dir[2] * this.pathLength);
+        vec3.add(this.position, this.position, dist);
     }
 
-    rotatePosX() {
-        // Rotate by random number in [20, 50]
-        let deg = 20.0 + 30.0 * Math.random();
-        let rotateMat = mat4.create();
-        mat4.fromXRotation(rotateMat, deg);
-        let orient = vec4.fromValues(this.orientation[0], this.orientation[1], this.orientation[2], 0.0);
+    rotateForwardPos() {
+        let rotMat = mat4.create();
+        let rad = degToRad(this.deg);
+        let axis = vec3.fromValues(this.forward[0], this.forward[1], this.forward[2]);
+        mat4.fromRotation(rotMat, rad, axis);
+        vec4.normalize(this.right, vec4.transformMat4(this.right, this.right, rotMat));
+        vec4.normalize(this.up, vec4.transformMat4(this.up, this.up, rotMat));
     }
+
+    rotateForwardNeg() {
+        let rotMat = mat4.create();
+        let rad = degToRad(-1.0 * this.deg);
+        let axis = vec3.fromValues(this.forward[0], this.forward[1], this.forward[2]);
+        mat4.fromRotation(rotMat, rad, axis);
+        vec4.normalize(this.right, vec4.transformMat4(this.right, this.right, rotMat));
+        vec4.normalize(this.up, vec4.transformMat4(this.up, this.up, rotMat));
+    }
+
+    rotateRightPos() {
+        let rotMat = mat4.create();
+        let rad = degToRad(this.deg);
+        let axis = vec3.fromValues(this.right[0], this.right[1], this.right[2]);
+        mat4.fromRotation(rotMat, rad, axis);
+        vec4.normalize(this.forward, vec4.transformMat4(this.forward, this.forward, rotMat));
+        vec4.normalize(this.up, vec4.transformMat4(this.up, this.up, rotMat));
+    }
+
+    rotateRightNeg() {
+        let rotMat = mat4.create();
+        let rad = degToRad(-1.0 * this.deg);
+        let axis = vec3.fromValues(this.right[0], this.right[1], this.right[2]);
+        mat4.fromRotation(rotMat, rad, axis);
+        vec4.normalize(this.forward, vec4.transformMat4(this.forward, this.forward, rotMat));
+        vec4.normalize(this.up, vec4.transformMat4(this.up, this.up, rotMat));
+    }
+
+    rotateUpPos() {
+        let rotMat = mat4.create();
+        let rad = degToRad(this.deg);
+        let axis = vec3.fromValues(this.up[0], this.up[1], this.up[2]);
+        mat4.fromRotation(rotMat, rad, axis);
+        vec4.normalize(this.forward, vec4.transformMat4(this.forward, this.forward, rotMat));
+        vec4.normalize(this.right, vec4.transformMat4(this.right, this.right, rotMat));
+    }
+
+    rotateUpNeg() {
+        let rotMat = mat4.create();
+        let rad = degToRad(-1.0 * this.deg);
+        let axis = vec3.fromValues(this.up[0], this.up[1], this.up[2]);
+        mat4.fromRotation(rotMat, rad, axis);
+        vec4.normalize(this.forward, vec4.transformMat4(this.forward, this.forward, rotMat));
+        vec4.normalize(this.right, vec4.transformMat4(this.right, this.right, rotMat));
+    }
+
+    getTransformationMat() {
+        let transformation = mat4.create();
+        let rotation = mat4.create();
+
+        mat4.set(rotation, this.right[0], this.right[1], this.right[2], 0, 
+                           this.up[0], this.up[1], this.up[2], 0,
+                           this.forward[0], this.forward[1], this.forward[2], 0,
+                           0, 0, 0, 1);
+
+        let translation = mat4.create();
+        mat4.fromTranslation(translation, this.position);
+
+        let scale = mat4.create();
+        mat4.fromScaling(scale, vec3.fromValues(this.position[0] / this.depth, 1.0, this.position[2] / this.depth));
+
+        mat4.multiply(transformation, rotation, translation);
+        mat4.multiply(transformation, transformation, scale);
+        return transformation;
+    }
+
 }
