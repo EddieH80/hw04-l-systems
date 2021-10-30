@@ -63,6 +63,7 @@ class Mesh extends Drawable {
     this.generateNor();
     this.generateUV();
     this.generateCol();
+    this.generateTransform();
 
     this.count = this.indices.length;
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufIdx);
@@ -85,14 +86,12 @@ class Mesh extends Drawable {
   }
 
   setInstanceVBOs(col1: Float32Array, col2: Float32Array, col3: Float32Array, col4: Float32Array, colors: Float32Array) {
-    this.colors = colors;
     this.col1 = col1;
     this.col2 = col2;
     this.col3 = col3;
     this.col4 = col4;
+    this.colors = colors;
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.bufCol);
-    gl.bufferData(gl.ARRAY_BUFFER, this.colors, gl.STATIC_DRAW);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.bufTransform1);
     gl.bufferData(gl.ARRAY_BUFFER, this.col1, gl.STATIC_DRAW);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.bufTransform2);
@@ -101,6 +100,8 @@ class Mesh extends Drawable {
     gl.bufferData(gl.ARRAY_BUFFER, this.col3, gl.STATIC_DRAW);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.bufTransform4);
     gl.bufferData(gl.ARRAY_BUFFER, this.col4, gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.bufCol);
+    gl.bufferData(gl.ARRAY_BUFFER, this.colors, gl.STATIC_DRAW);
   }
 };
 

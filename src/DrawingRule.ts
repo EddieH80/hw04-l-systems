@@ -2,13 +2,15 @@ import {vec3, vec4, mat4} from 'gl-matrix';
 import Turtle from './Turtle';
 
 export default class DrawingRule {
-    drawRules: Map<string, any> = new Map;
+    drawRules: Map<string, any> = new Map();
     turtleStack: Array<Turtle> = new Array();
     turtle: Turtle;
     branchTransformations: mat4[] = [];
     leafTransformations: mat4[] = [];
 
     constructor() {
+        this.turtle = new Turtle(vec3.fromValues(0, 0, 0), vec4.fromValues(1, 0, 0, 0),
+        vec4.fromValues(0, 0, 1, 0), vec4.fromValues(0, 1, 0, 0), 20, 1, 20);
         this.drawRules.set("F", this.turtle.moveForward.bind(this.turtle));
         this.drawRules.set("1", this.turtle.rotateForwardPos.bind(this.turtle));
         this.drawRules.set("2", this.turtle.rotateForwardNeg.bind(this.turtle));

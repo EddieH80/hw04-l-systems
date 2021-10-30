@@ -39,7 +39,7 @@ function loadLSystem() {
   cylinder = new Mesh(cylinderObj, vec3.fromValues(0, 0, 0));
   cylinder.create();
 
-  lsystem = new LSystem('F', 3);
+  lsystem = new LSystem("FX", 3);
   lsystem.iterate();
 
   // The columns of the transformation matrices
@@ -52,7 +52,7 @@ function loadLSystem() {
 
   let branchTransformations = lsystem.drawer.branchTransformations;
   let leafTransformations = lsystem.drawer.leafTransformations;
-
+  
   // Push branch transformation matrices
   for (let i = 0; i < branchTransformations.length; i++) {
     let transformation = branchTransformations[i];
@@ -91,13 +91,14 @@ function loadLSystem() {
   cylinder.setInstanceVBOs(col1VBO, col2VBO, col3VBO, col4VBO, colorsVBO);
   cylinder.setNumInstances(branchTransformations.length);
 
-  // Empty out
+  // Empty out arrays
   col1 = [];
   col2 = [];
   col3 = [];
   col4 = [];
   colors = [];
 
+  // Push leaf transformation matrices
   for (let i = 0; i < leafTransformations.length; i++) {
     let transformation = leafTransformations[i];
 
@@ -132,7 +133,7 @@ function loadLSystem() {
   col3VBO = new Float32Array(col3);
   col4VBO = new Float32Array(col4);
   cylinder.setInstanceVBOs(col1VBO, col2VBO, col3VBO, col4VBO, colorsVBO);
-  cylinder.setNumInstances(branchTransformations.length);
+  cylinder.setNumInstances(leafTransformations.length);
 }
 
 function loadScene() {
@@ -191,13 +192,15 @@ function main() {
 
   // Initial call to load scene
   loadScene();
+  loadLSystem();
 
   const camera = new Camera(vec3.fromValues(50, 50, 10), vec3.fromValues(50, 50, 0));
 
   const renderer = new OpenGLRenderer(canvas);
   renderer.setClearColor(0.2, 0.2, 0.2, 1);
-  gl.enable(gl.BLEND);
-  gl.blendFunc(gl.ONE, gl.ONE); // Additive blending
+  // gl.enable(gl.BLEND);
+  // gl.blendFunc(gl.ONE, gl.ONE); // Additive blending
+  gl.enable(gl.DEPTH_TEST);
 
   const instancedShader = new ShaderProgram([
     new Shader(gl.VERTEX_SHADER, require('./shaders/instanced-vert.glsl')),
@@ -219,7 +222,7 @@ function main() {
     renderer.clear();
     renderer.render(camera, flat, [screenQuad]);
     renderer.render(camera, instancedShader, [
-      square,
+      cylinder
     ]);
     stats.end();
 

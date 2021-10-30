@@ -70,6 +70,17 @@ abstract class Drawable {
     this.bufUV = gl.createBuffer();
   }
 
+  generateTransform() {
+    this.transform1Generated = true;
+    this.bufTransform1 = gl.createBuffer();
+    this.transform2Generated = true;
+    this.bufTransform2 = gl.createBuffer();
+    this.transform3Generated = true;
+    this.bufTransform3 = gl.createBuffer();
+    this.transform4Generated = true;
+    this.bufTransform4 = gl.createBuffer();
+  }
+
   bindIdx(): boolean {
     if (this.idxGenerated) {
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufIdx);
@@ -117,28 +128,28 @@ abstract class Drawable {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufTransform1);
     }
     return this.transform1Generated;
-}
+  }
 
-bindTransform2(): boolean {
-    if (this.transform2Generated) {
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufTransform2);
-    }
-    return this.transform2Generated;
-}
+  bindTransform2(): boolean {
+      if (this.transform2Generated) {
+          gl.bindBuffer(gl.ARRAY_BUFFER, this.bufTransform2);
+      }
+      return this.transform2Generated;
+  }
 
-bindTransform3(): boolean {
-    if (this.transform3Generated) {
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufTransform3);
-    }
-    return this.transform3Generated;
-}
+  bindTransform3(): boolean {
+      if (this.transform3Generated) {
+          gl.bindBuffer(gl.ARRAY_BUFFER, this.bufTransform3);
+      }
+      return this.transform3Generated;
+  }
 
-bindTransform4(): boolean {
-    if (this.transform4Generated) {
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufTransform4);
-    }
-    return this.transform4Generated;
-}
+  bindTransform4(): boolean {
+      if (this.transform4Generated) {
+          gl.bindBuffer(gl.ARRAY_BUFFER, this.bufTransform4);
+      }
+      return this.transform4Generated;
+  }
 
   elemCount(): number {
     return this.count;

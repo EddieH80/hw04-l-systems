@@ -11,7 +11,7 @@ export default class LSystem {
 
     constructor(axiom: string, iterations: number) {
         this.axiom = axiom;
-        this.iterations = iterations
+        this.iterations = iterations;
         this.expander = new ExpansionRule();
         this.drawer = new DrawingRule();
     }
