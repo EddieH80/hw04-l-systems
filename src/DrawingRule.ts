@@ -9,8 +9,8 @@ export default class DrawingRule {
     leafTransformations: mat4[] = [];
 
     constructor() {
-        this.turtle = new Turtle(vec3.fromValues(0, 0, 0), vec4.fromValues(1, 0, 0, 0),
-        vec4.fromValues(0, 0, 1, 0), vec4.fromValues(0, 1, 0, 0), 20, 1, 20);
+        this.turtle = new Turtle(vec3.fromValues(0, 0, 0), vec4.fromValues(0, 1, 0, 0),
+        vec4.fromValues(1, 0, 0, 0), vec4.fromValues(0, 0, 1, 0), 1, 1, 30);
         this.drawRules.set("F", this.turtle.moveForward.bind(this.turtle));
         this.drawRules.set("1", this.turtle.rotateForwardPos.bind(this.turtle));
         this.drawRules.set("2", this.turtle.rotateForwardNeg.bind(this.turtle));
@@ -47,10 +47,10 @@ export default class DrawingRule {
     }
 
     pushTurtle(turtle: Turtle) {
-        this.turtleStack.push(turtle);
+        this.turtleStack.push(turtle.deepCopy());
     }
 
     popTurtle() {
-        return this.turtleStack.pop();
+        this.turtle = this.turtleStack.pop().deepCopy();
     }
 }

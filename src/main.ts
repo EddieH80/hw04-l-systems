@@ -17,6 +17,7 @@ const controls = {
 
 let square: Square;
 let cylinder: Mesh;
+let leaf: Mesh;
 let screenQuad: ScreenQuad;
 let lsystem: LSystem;
 let time: number = 0.0;
@@ -39,6 +40,10 @@ function loadLSystem() {
   cylinder = new Mesh(cylinderObj, vec3.fromValues(0, 0, 0));
   cylinder.create();
 
+  let leafObj = readTextFile("./cylinder.obj");
+  leaf = new Mesh(leafObj, vec3.fromValues(0, 0, 0));
+  leaf.create();
+
   lsystem = new LSystem("FX", 3);
   lsystem.iterate();
 
@@ -47,7 +52,6 @@ function loadLSystem() {
   let col2 = [];
   let col3 = [];
   let col4 = [];
-
   let colors = [];
 
   let branchTransformations = lsystem.drawer.branchTransformations;
@@ -122,9 +126,9 @@ function loadLSystem() {
     col4.push(transformation[14]);
     col4.push(transformation[15]);
 
-    colors.push(1.0);
-    colors.push(1.0);
-    colors.push(1.0);
+    colors.push(0.5);
+    colors.push(0.5);
+    colors.push(0.5);
     colors.push(1.0);
   }
   colorsVBO = new Float32Array(colors);
@@ -132,8 +136,8 @@ function loadLSystem() {
   col2VBO = new Float32Array(col2);
   col3VBO = new Float32Array(col3);
   col4VBO = new Float32Array(col4);
-  cylinder.setInstanceVBOs(col1VBO, col2VBO, col3VBO, col4VBO, colorsVBO);
-  cylinder.setNumInstances(leafTransformations.length);
+  leaf.setInstanceVBOs(col1VBO, col2VBO, col3VBO, col4VBO, colorsVBO);
+  leaf.setNumInstances(leafTransformations.length);
 }
 
 function loadScene() {

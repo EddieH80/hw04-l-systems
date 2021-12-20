@@ -8,19 +8,13 @@ export default class ExpansionRule {
 
     constructor() {
         this.grammarX.set("F", "FF");
-        this.grammarX.set("X", "F[1X]2FLX");
-        this.grammarX.set("1", "1");
-        this.grammarX.set("2", "2");
+        this.grammarX.set("X", "F[1FX]2FX");
 
-        this.grammarY.set("F", "FFF");
-        this.grammarY.set("X", "FL[3X]4FX");
-        this.grammarX.set("3", "3");
-        this.grammarX.set("4", "4");
+        this.grammarY.set("F", "FF");
+        this.grammarY.set("X", "F[3FX]4FX");
 
         this.grammarZ.set("F", "FF");
-        this.grammarZ.set("X", "FL[5X]6FX");
-        this.grammarX.set("5", "5");
-        this.grammarX.set("6", "6");
+        this.grammarZ.set("X", "F[5FX]6FX");
     }
 
     expand(axiom: string, iterations: number) {
@@ -38,6 +32,8 @@ export default class ExpansionRule {
                     } else {
                         temp += this.grammarZ.get(out.charAt(j));
                     }
+                } else {
+                    temp += out.charAt(j);
                 }
             }
             out = temp;

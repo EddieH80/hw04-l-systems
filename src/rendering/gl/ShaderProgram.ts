@@ -57,6 +57,12 @@ class ShaderProgram {
     this.attrCol = gl.getAttribLocation(this.prog, "vs_Col");
     this.attrTranslate = gl.getAttribLocation(this.prog, "vs_Translate");
     this.attrUV = gl.getAttribLocation(this.prog, "vs_UV");
+
+    this.attrTransformCol1 = gl.getAttribLocation(this.prog, "vs_TransformCol1");
+    this.attrTransformCol2 = gl.getAttribLocation(this.prog, "vs_TransformCol2");
+    this.attrTransformCol3 = gl.getAttribLocation(this.prog, "vs_TransformCol3");
+    this.attrTransformCol4 = gl.getAttribLocation(this.prog, "vs_TransformCol4");
+    
     this.unifModel      = gl.getUniformLocation(this.prog, "u_Model");
     this.unifModelInvTr = gl.getUniformLocation(this.prog, "u_ModelInvTr");
     this.unifViewProj   = gl.getUniformLocation(this.prog, "u_ViewProj");
@@ -206,6 +212,11 @@ class ShaderProgram {
     if (this.attrCol != -1) gl.disableVertexAttribArray(this.attrCol);
     if (this.attrTranslate != -1) gl.disableVertexAttribArray(this.attrTranslate);
     if (this.attrUV != -1) gl.disableVertexAttribArray(this.attrUV);
+
+    if (this.attrTransformCol1 != -1) gl.disableVertexAttribArray(this.attrTransformCol1);
+    if (this.attrTransformCol2 != -1) gl.disableVertexAttribArray(this.attrTransformCol2);
+    if (this.attrTransformCol3 != -1) gl.disableVertexAttribArray(this.attrTransformCol3);
+    if (this.attrTransformCol4 != -1) gl.disableVertexAttribArray(this.attrTransformCol4);
   }
 };
 

@@ -14,13 +14,13 @@ export default class Turtle {
     radius: number;
     deg: number;
 
-    constructor(pos: vec3, forward: vec4, right: vec4, up: vec4, pathLength: number, depth: number, radius: number) {
+    constructor(pos: vec3, forward: vec4, right: vec4, up: vec4, depth: number, pathLength: number, radius: number) {
         this.position = pos;
         this.forward = forward;
         this.right = right;
         this.up = up;
-        this.pathLength = pathLength;
         this.depth = depth;
+        this.pathLength = pathLength;
         this.radius = radius;
         this.deg = 20.0 + Math.random() * 30.0;
     }
@@ -85,6 +85,24 @@ export default class Turtle {
         vec4.normalize(this.right, vec4.transformMat4(this.right, this.right, rotMat));
     }
 
+    increaseDepth() {
+        this.depth = this.depth + 1;
+    }
+
+    deepCopy() {
+        let copy = new Turtle(vec3.fromValues(0, 0, 0), vec4.fromValues(0, 0, 0, 0), 
+                              vec4.fromValues(0, 0, 0, 0), vec4.fromValues(0, 0, 0, 0), 
+                              0, 0, 0);
+        copy.position = vec3.clone(this.position);
+        copy.forward = vec4.clone(this.forward);
+        copy.right = vec4.clone(this.right);
+        copy.up = vec4.clone(this.up);
+        copy.depth = this.depth;
+        copy.pathLength = this.pathLength;
+        copy.radius = this.radius;
+        return copy;
+    }
+
     getTransformationMat() {
         let transformation = mat4.create();
         let rotation = mat4.create();
@@ -98,7 +116,7 @@ export default class Turtle {
         mat4.fromTranslation(translation, this.position);
 
         let scale = mat4.create();
-        mat4.fromScaling(scale, vec3.fromValues(this.position[0] / this.depth, 1.0, this.position[2] / this.depth));
+        mat4.fromScaling(scale, vec3.fromValues(this.radius / this.depth, 1, this.radius / this.depth));
 
         mat4.multiply(transformation, rotation, translation);
         mat4.multiply(transformation, transformation, scale);
